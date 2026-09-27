@@ -86,12 +86,22 @@ struct RunnerService {
         loadRunnerBundleList()
     }
 
-    func updateRunnerSpeed(from cpuInfo: CPUInfo?) {
-        let cpuValue = max(1.0, min(20.0, Float(cpuInfo?.percentage.value ?? .zero) / 5.0))
+    func updateRunnerSpeed(from cpuInfo: CPUInfo?, gpuInfo: GPUInfo? = nil) {
+        let cpuLoad = cpuInfo?.percentage.value ?? .zero
+        let load: Double = switch userDefaultsRepository.runnerSpeedSource {
+        case .cpu:
+            cpuLoad
+        case .gpu:
+            // 读不到 GPU 时退回 CPU，避免跑者一直停在最慢档
+            gpuInfo?.utilization ?? cpuLoad
+        case .max:
+            max(cpuLoad, gpuInfo?.utilization ?? .zero)
+        }
+        let loadValue = max(1.0, min(20.0, Float(load) / 5.0))
         let speed: Float = if userDefaultsRepository.speedDecreasesUnderLoad {
-            0.5 * (21.0 - cpuValue)
+            0.5 * (21.0 - loadValue)
         } else {
-            cpuValue
+            loadValue
         }
         appStateClient.send(\.runnerSpeeds, speed)
     }

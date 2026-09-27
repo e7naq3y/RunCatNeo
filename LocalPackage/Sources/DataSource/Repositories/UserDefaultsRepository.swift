@@ -33,6 +33,11 @@ public struct UserDefaultsRepository: Sendable {
         nonmutating set { userDefaultsClient.set(newValue, .speedDecreasesUnderLoad) }
     }
 
+    public var runnerSpeedSource: RunnerSpeedSource {
+        get { userDefaultsClient.string(.runnerSpeedSource).flatMap(RunnerSpeedSource.init(rawValue:)) ?? .default }
+        nonmutating set { userDefaultsClient.set(newValue.rawValue, .runnerSpeedSource) }
+    }
+
     public var isFlippedHorizontally: Bool {
         get { userDefaultsClient.bool(.isFlippedHorizontally) }
         nonmutating set { userDefaultsClient.set(newValue, .isFlippedHorizontally) }
@@ -107,6 +112,7 @@ public struct UserDefaultsRepository: Sendable {
         userDefaultsClient.register([
             .runnerID: RunnerKind.cat.id,
             .speedDecreasesUnderLoad: false,
+            .runnerSpeedSource: RunnerSpeedSource.default.rawValue,
             .isFlippedHorizontally: false,
             .updateInterval: UpdateInterval.default.rawValue,
         ])

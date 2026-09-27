@@ -27,13 +27,34 @@ struct SystemInfoStackView: View {
     var systemInfoBundle: SystemInfoBundle
     var cpuRingBuffer: RingBuffer
     var memoryRingBuffer: RingBuffer
+    var gpuInfo: GPUInfo?
+    var gpuRingBuffer: RingBuffer
+    var thermalInfo: ThermalInfo?
     var isPreview: Bool
+
+    private var displayedThermalInfo: ThermalInfo? {
+        isPreview ? ThermalInfo.mock : thermalInfo
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if let cpuInfo = systemInfoBundle.cpuInfo {
-                SystemInfoView(systemInfo: cpuInfo) {
+                SystemInfoView(
+                    icon: Image(systemName: cpuInfo.icon),
+                    summary: cpuInfo.summary,
+                    details: cpuInfo.details + ThermalInfo.temperatureLines(displayedThermalInfo?.cpu)
+                ) {
                     LineGraphView(values: (isPreview ? RingBuffer.mock : cpuRingBuffer).values)
+                }
+            }
+            if let gpuInfo = isPreview ? GPUInfo.mock : gpuInfo {
+                Divider()
+                SystemInfoView(
+                    icon: GPUInfo.icon,
+                    summary: gpuInfo.summary,
+                    details: gpuInfo.details + ThermalInfo.temperatureLines(displayedThermalInfo?.gpu)
+                ) {
+                    LineGraphView(values: (isPreview ? RingBuffer.mock : gpuRingBuffer).values)
                 }
             }
             if let memoryInfo = systemInfoBundle.memoryInfo {

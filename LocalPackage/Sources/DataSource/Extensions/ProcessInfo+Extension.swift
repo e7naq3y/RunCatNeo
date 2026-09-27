@@ -37,6 +37,10 @@ extension ProcessInfo {
 #endif
     }
 
+    public static var isSandboxed: Bool {
+        Self.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
+    }
+
     public static var isPreview: Bool {
 #if DEBUG
         Self.processInfo.arguments.contains("IsPreview")

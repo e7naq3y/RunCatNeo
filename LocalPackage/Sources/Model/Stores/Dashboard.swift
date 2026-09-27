@@ -39,6 +39,9 @@ public final class Dashboard: Composable {
     public var systemInfoBundle: SystemInfoBundle
     public var cpuRingBuffer: RingBuffer
     public var memoryRingBuffer: RingBuffer
+    public var gpuInfo: GPUInfo?
+    public var gpuRingBuffer: RingBuffer
+    public var thermalInfo: ThermalInfo?
     public var customMetricsBundles: [CustomMetricsBundle]
     public var displayedDate: Date
     public var currentRunner: Runner?
@@ -52,6 +55,9 @@ public final class Dashboard: Composable {
         systemInfoBundle: SystemInfoBundle = .cpuZero(),
         cpuRingBuffer: RingBuffer = .init(),
         memoryRingBuffer: RingBuffer = .init(),
+        gpuInfo: GPUInfo? = nil,
+        gpuRingBuffer: RingBuffer = .init(),
+        thermalInfo: ThermalInfo? = nil,
         customMetricsBundles: [CustomMetricsBundle] = [],
         displayedDate: Date? = nil,
         currentRunner: Runner? = nil,
@@ -70,6 +76,9 @@ public final class Dashboard: Composable {
         self.systemInfoBundle = systemInfoBundle
         self.cpuRingBuffer = cpuRingBuffer
         self.memoryRingBuffer = memoryRingBuffer
+        self.gpuInfo = gpuInfo
+        self.gpuRingBuffer = gpuRingBuffer
+        self.thermalInfo = thermalInfo
         self.customMetricsBundles = customMetricsBundles
         self.displayedDate = displayedDate ?? dateClient.now()
         self.currentRunner = currentRunner
@@ -162,6 +171,9 @@ public final class Dashboard: Composable {
         systemInfoBundle = metrics.systemInfoBundle
         cpuRingBuffer = metrics.cpuRingBuffer
         memoryRingBuffer = metrics.memoryRingBuffer
+        gpuInfo = metrics.gpuInfo
+        gpuRingBuffer = metrics.gpuRingBuffer
+        thermalInfo = metrics.thermalInfo
         customMetricsBundles = metrics.customMetricsBundles
     }
 

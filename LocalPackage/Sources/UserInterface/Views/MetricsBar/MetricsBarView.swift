@@ -32,6 +32,9 @@ struct MetricsBarView: View {
         if store.metricsBarConfiguration.showsCPU, store.systemInfoBundle.cpuInfo != nil {
             widthArray.append(iconWidth + IndicatorKind.usageFullLabel.size.width)
         }
+        if store.metricsBarConfiguration.showsGPU, store.gpuInfo != nil {
+            widthArray.append(iconWidth + IndicatorKind.usageFullLabel.size.width)
+        }
         if store.metricsBarConfiguration.showsMemory, store.systemInfoBundle.memoryInfo != nil {
             widthArray.append(iconWidth + IndicatorKind.usageFullLabel.size.width)
         }
@@ -70,6 +73,9 @@ struct MetricsBarView: View {
                 var point = CGPoint(x: 0, y: 1)
                 if store.metricsBarConfiguration.showsCPU, let cpuInfo = store.systemInfoBundle.cpuInfo {
                     drawSystemInfo(context: &context, point: &point, systemInfo: cpuInfo)
+                }
+                if store.metricsBarConfiguration.showsGPU, let gpuInfo = store.gpuInfo {
+                    drawGPUInfo(context: &context, point: &point, gpuInfo: gpuInfo)
                 }
                 if store.metricsBarConfiguration.showsMemory, let memoryInfo = store.systemInfoBundle.memoryInfo {
                     drawSystemInfo(context: &context, point: &point, systemInfo: memoryInfo)
@@ -136,6 +142,20 @@ struct MetricsBarView: View {
         default:
             break
         }
+    }
+
+    private func drawGPUInfo(
+        context: inout GraphicsContext,
+        point: inout CGPoint,
+        gpuInfo: GPUInfo
+    ) {
+        let iconSize = IndicatorKind.categoryIcon.size
+        context.drawIcon(GPUInfo.icon, point: point, size: iconSize)
+        point.x += iconSize.width
+        context.drawBlackText(origin: point, size: IndicatorKind.usageFullLabel.size) {
+            Text(verbatim: gpuInfo.menuBarDescription)
+        }
+        point.x += IndicatorKind.usageFullLabel.size.width + IndicatorKind.spacer.size.width
     }
 
     private func drawCustomMetrics(

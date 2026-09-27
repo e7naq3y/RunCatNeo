@@ -17,19 +17,19 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-
 import Foundation
 
-public struct MetricsBarConfiguration: Codable, Sendable, Equatable {
+public struct MetricsBarConfiguration: Sendable, Equatable {
     public var showsCPU: Bool
     public var showsMemory: Bool
     public var showsStorage: Bool
     public var showsBattery: Bool
     public var showsNetwork: Bool
     public var visibleCustomMetricsSourceIDs: Set<UUID>
+    public var showsGPU: Bool = false
 
     public var isEmpty: Bool {
-        !showsCPU && !showsMemory && !showsStorage && !showsBattery && !showsNetwork
+        !showsCPU && !showsGPU && !showsMemory && !showsStorage && !showsBattery && !showsNetwork
             && visibleCustomMetricsSourceIDs.isEmpty
     }
 
@@ -43,6 +43,21 @@ public struct MetricsBarConfiguration: Codable, Sendable, Equatable {
         showsStorage: false,
         showsBattery: false,
         showsNetwork: false,
-        visibleCustomMetricsSourceIDs: []
+        visibleCustomMetricsSourceIDs: [],
+        showsGPU: false
     )
+}
+
+extension MetricsBarConfiguration: Codable {
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        showsCPU = try container.decode(Bool.self, forKey: .showsCPU)
+        showsMemory = try container.decode(Bool.self, forKey: .showsMemory)
+        showsStorage = try container.decode(Bool.self, forKey: .showsStorage)
+        showsBattery = try container.decode(Bool.self, forKey: .showsBattery)
+        showsNetwork = try container.decode(Bool.self, forKey: .showsNetwork)
+        visibleCustomMetricsSourceIDs = try container.decode(Set<UUID>.self, forKey: .visibleCustomMetricsSourceIDs)
+        // 官方版保存的配置里没有 GPU 键
+        showsGPU = try container.decodeIfPresent(Bool.self, forKey: .showsGPU) ?? false
+    }
 }

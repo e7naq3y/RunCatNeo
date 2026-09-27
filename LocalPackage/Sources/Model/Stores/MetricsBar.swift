@@ -33,6 +33,7 @@ public final class MetricsBar: Composable {
 
     public var metricsBarConfiguration: MetricsBarConfiguration
     public var systemInfoBundle: SystemInfoBundle
+    public var gpuInfo: GPUInfo?
     public var customMetricsBundles: [CustomMetricsBundle]
     public let isPreview: Bool
     public let action: (Action) async -> Void
@@ -41,6 +42,7 @@ public final class MetricsBar: Composable {
         _ appDependencies: AppDependencies,
         metricsBarConfiguration: MetricsBarConfiguration? = nil,
         systemInfoBundle: SystemInfoBundle = .init(),
+        gpuInfo: GPUInfo? = nil,
         customMetricsBundles: [CustomMetricsBundle] = [],
         isPreview: Bool? = nil,
         action: @escaping (Action) async -> Void = { _ in }
@@ -50,6 +52,7 @@ public final class MetricsBar: Composable {
         self.logService = .init(appDependencies)
         self.metricsBarConfiguration = metricsBarConfiguration ?? userDefaultsRepository.metricsBarConfiguration
         self.systemInfoBundle = systemInfoBundle
+        self.gpuInfo = gpuInfo
         self.customMetricsBundles = customMetricsBundles
         self.isPreview = isPreview ?? ProcessInfo.isPreview
         self.action = action
@@ -94,6 +97,7 @@ public final class MetricsBar: Composable {
 
     private func updateMetrics(from metrics: Metrics) {
         systemInfoBundle = metrics.systemInfoBundle
+        gpuInfo = metrics.gpuInfo
         customMetricsBundles = metrics.customMetricsBundles
     }
 

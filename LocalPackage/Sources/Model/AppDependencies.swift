@@ -27,11 +27,13 @@ public struct AppDependencies: Sendable {
     public var dateClient = DateClient.liveValue
     public var fileManagerClient = FileManagerClient.liveValue
     public var fileWatcherClient = FileWatcherClient.liveValue
+    public var gpuInfoClient = GPUInfoClient.liveValue
     public var loggingSystemClient = LoggingSystemClient.liveValue
     public var nsAppClient = NSAppClient.liveValue
     public var nsWorkspaceClient = NSWorkspaceClient.liveValue
     public var smAppServiceClient = SMAppServiceClient.liveValue
     public var systemInfoObserverClient = SystemInfoObserverClient.liveValue
+    public var thermalClient = ThermalClient.liveValue
     public var urlClient = URLClient.liveValue
     public var userDefaultsClient = UserDefaultsClient.liveValue
     public var uuidClient = UUIDClient.liveValue
@@ -50,11 +52,13 @@ extension AppDependencies {
         dateClient: DateClient = .testValue,
         fileManagerClient: FileManagerClient = .testValue,
         fileWatcherClient: FileWatcherClient = .testValue,
+        gpuInfoClient: GPUInfoClient = .testValue,
         loggingSystemClient: LoggingSystemClient = .testValue,
         nsAppClient: NSAppClient = .testValue,
         nsWorkspaceClient: NSWorkspaceClient = .testValue,
         smAppServiceClient: SMAppServiceClient = .testValue,
         systemInfoObserverClient: SystemInfoObserverClient = .testValue,
+        thermalClient: ThermalClient = .testValue,
         urlClient: URLClient = .testValue,
         userDefaultsClient: UserDefaultsClient = .testValue,
         uuidClient: UUIDClient = .testValue
@@ -65,11 +69,13 @@ extension AppDependencies {
             dateClient: dateClient,
             fileManagerClient: fileManagerClient,
             fileWatcherClient: fileWatcherClient,
+            gpuInfoClient: gpuInfoClient,
             loggingSystemClient: loggingSystemClient,
             nsAppClient: nsAppClient,
             nsWorkspaceClient: nsWorkspaceClient,
             smAppServiceClient: smAppServiceClient,
             systemInfoObserverClient: systemInfoObserverClient,
+            thermalClient: thermalClient,
             urlClient: urlClient,
             userDefaultsClient: userDefaultsClient,
             uuidClient: uuidClient

@@ -36,7 +36,8 @@ public struct URLClient: DependencyClient {
             try $0.bookmarkData(options: $1)
         },
         startAccessingSecurityScopedResource: {
-            $0.startAccessingSecurityScopedResource()
+            // 非沙盒进程里这个调用固定返回 false，但文件本来就能直接读
+            $0.startAccessingSecurityScopedResource() || !ProcessInfo.isSandboxed
         },
         stopAccessingSecurityScopedResource: {
             $0.stopAccessingSecurityScopedResource()

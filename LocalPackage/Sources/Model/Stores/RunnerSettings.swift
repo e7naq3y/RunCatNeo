@@ -29,6 +29,7 @@ public final class RunnerSettings: Composable {
     private let systemMetricsService: SystemMetricsService
 
     public var speedDecreasesUnderLoad: Bool
+    public var runnerSpeedSource: RunnerSpeedSource
     public var isFlippedHorizontally: Bool
     public var showingAlert: Bool
     public var error: RCNError?
@@ -38,6 +39,7 @@ public final class RunnerSettings: Composable {
     public init(
         _ appDependencies: AppDependencies,
         speedDecreasesUnderLoad: Bool? = nil,
+        runnerSpeedSource: RunnerSpeedSource? = nil,
         isFlippedHorizontally: Bool? = nil,
         showingAlert: Bool = false,
         error: RCNError? = nil,
@@ -49,6 +51,7 @@ public final class RunnerSettings: Composable {
         self.runnerService = .init(appDependencies)
         self.systemMetricsService = .init(appDependencies)
         self.speedDecreasesUnderLoad = speedDecreasesUnderLoad ?? userDefaultsRepository.speedDecreasesUnderLoad
+        self.runnerSpeedSource = runnerSpeedSource ?? userDefaultsRepository.runnerSpeedSource
         self.isFlippedHorizontally = isFlippedHorizontally ?? userDefaultsRepository.isFlippedHorizontally
         self.showingAlert = showingAlert
         self.error = error
@@ -67,8 +70,12 @@ public final class RunnerSettings: Composable {
         case let .slowDownUnderLoadToggleSwitched(isOn):
             speedDecreasesUnderLoad = isOn
             userDefaultsRepository.speedDecreasesUnderLoad = isOn
-            let cpuInfo = systemMetricsService.currentSystemInfoBundle.cpuInfo
-            runnerService.updateRunnerSpeed(from: cpuInfo)
+            refreshRunnerSpeed()
+
+        case let .runnerSpeedSourcePickerSelected(source):
+            runnerSpeedSource = source
+            userDefaultsRepository.runnerSpeedSource = source
+            refreshRunnerSpeed()
 
         case let .flipHorizontallyToggleSwitched(isOn):
             isFlippedHorizontally = isOn
@@ -84,9 +91,15 @@ public final class RunnerSettings: Composable {
         }
     }
 
+    private func refreshRunnerSpeed() {
+        let cpuInfo = systemMetricsService.currentSystemInfoBundle.cpuInfo
+        runnerService.updateRunnerSpeed(from: cpuInfo, gpuInfo: systemMetricsService.currentGPUInfo)
+    }
+
     public enum Action: Sendable {
         case viewAppeared(String)
         case slowDownUnderLoadToggleSwitched(Bool)
+        case runnerSpeedSourcePickerSelected(RunnerSpeedSource)
         case flipHorizontallyToggleSwitched(Bool)
         case customRunnerSettings(CustomRunnerSettings.Action)
     }

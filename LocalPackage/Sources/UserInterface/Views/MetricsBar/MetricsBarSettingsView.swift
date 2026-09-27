@@ -35,6 +35,12 @@ struct MetricsBarSettingsView: View {
                     Text("showCPUUsage", bundle: .module)
                 }
                 Toggle(isOn: Binding<Bool>(
+                    get: { store.metricsBarConfiguration.showsGPU },
+                    asyncSet: { await store.send(.showsGPUToggleSwitched($0)) }
+                )) {
+                    Text("showGPUUsage", bundle: .module)
+                }
+                Toggle(isOn: Binding<Bool>(
                     get: { store.metricsBarConfiguration.showsMemory },
                     asyncSet: { await store.send(.showsSystemMetricsToggleSwitched(.memory, $0)) }
                 )) {

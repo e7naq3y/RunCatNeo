@@ -25,16 +25,25 @@ public struct Metrics: Sendable {
     public var cpuRingBuffer: RingBuffer
     public var memoryRingBuffer: RingBuffer
     public var customMetricsBundles: [CustomMetricsBundle]
+    public var gpuInfo: GPUInfo?
+    public var gpuRingBuffer: RingBuffer
+    public var thermalInfo: ThermalInfo?
 
     public init(
         systemInfoBundle: SystemInfoBundle = .cpuZero(),
         cpuRingBuffer: RingBuffer = .init(),
         memoryRingBuffer: RingBuffer = .init(),
-        customMetricsBundles: [CustomMetricsBundle] = []
+        customMetricsBundles: [CustomMetricsBundle] = [],
+        gpuInfo: GPUInfo? = nil,
+        gpuRingBuffer: RingBuffer = .init(),
+        thermalInfo: ThermalInfo? = nil
     ) {
         self.systemInfoBundle = systemInfoBundle
         self.cpuRingBuffer = cpuRingBuffer
         self.memoryRingBuffer = memoryRingBuffer
         self.customMetricsBundles = customMetricsBundles
+        self.gpuInfo = gpuInfo
+        self.gpuRingBuffer = gpuRingBuffer
+        self.thermalInfo = thermalInfo
     }
 }

@@ -128,6 +128,15 @@ public final class MetricsSettings: Composable {
             systemMetricsService.toggleSystemMetricsActivation(type: type, isOn: isOn)
             systemMetricsService.emitConfigurationChange()
 
+        case let .monitorsGPUToggleSwitched(isOn):
+            systemMetricsConfiguration.monitorsGPU = isOn
+            var metricsBarConfiguration = userDefaultsRepository.metricsBarConfiguration
+            metricsBarConfiguration.showsGPU = metricsBarConfiguration.showsGPU && isOn
+            userDefaultsRepository.systemMetricsConfiguration = systemMetricsConfiguration
+            userDefaultsRepository.metricsBarConfiguration = metricsBarConfiguration
+            systemMetricsService.toggleGPUMonitoring(isOn: isOn)
+            systemMetricsService.emitConfigurationChange()
+
         case let .customMetricsSettings(.errorOccurred(error)):
             self.error = error
             showingAlert = true
@@ -148,6 +157,7 @@ public final class MetricsSettings: Composable {
         case changedMyMindButtonTapped
         case showButtonTapped
         case monitorsSystemMetricsToggleSwitched(SystemInfoType, Bool)
+        case monitorsGPUToggleSwitched(Bool)
         case customMetricsSettings(CustomMetricsSettings.Action)
     }
 }

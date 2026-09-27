@@ -57,8 +57,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 group.addTask {
                     let stream = systemInfoObserverClient.systemInfoStream()
                     for await value in stream {
-                        systemMetricsService.updateMetrics(from: value)
-                        runnerService.updateRunnerSpeed(from: value.cpuInfo)
+                        let gpuInfo = systemMetricsService.updateMetrics(from: value)
+                        runnerService.updateRunnerSpeed(from: value.cpuInfo, gpuInfo: gpuInfo)
                     }
                 }
             }

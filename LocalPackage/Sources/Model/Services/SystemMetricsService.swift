@@ -24,15 +24,23 @@ import SystemInfoKit
 struct SystemMetricsService {
     private let appStateClient: AppStateClient
     private let systemInfoObserverClient: SystemInfoObserverClient
+    private let gpuInfoClient: GPUInfoClient
+    private let thermalClient: ThermalClient
     private let userDefaultsRepository: UserDefaultsRepository
 
     var currentSystemInfoBundle: SystemInfoBundle {
         systemInfoObserverClient.currentSystemInfo()
     }
 
+    var currentGPUInfo: GPUInfo? {
+        gpuInfoClient.read()
+    }
+
     init(_ appDependencies: AppDependencies) {
         self.appStateClient = appDependencies.appStateClient
         self.systemInfoObserverClient = appDependencies.systemInfoObserverClient
+        self.gpuInfoClient = appDependencies.gpuInfoClient
+        self.thermalClient = appDependencies.thermalClient
         self.userDefaultsRepository = .init(appDependencies.userDefaultsClient)
     }
 
@@ -56,14 +64,36 @@ struct SystemMetricsService {
         systemInfoObserverClient.toggleActivation([type: isOn])
     }
 
-    func updateMetrics(from systemInfoBundle: SystemInfoBundle) {
+    /// 返回本轮采到的 GPU 信息，供跑者速度使用；仪表盘关掉 GPU 卡片时不写入 metrics
+    @discardableResult
+    func updateMetrics(from systemInfoBundle: SystemInfoBundle) -> GPUInfo? {
+        let monitorsGPU = userDefaultsRepository.systemMetricsConfiguration.monitorsGPU
+        let needsGPU = monitorsGPU || userDefaultsRepository.runnerSpeedSource != .cpu
+        let gpuInfo = needsGPU ? gpuInfoClient.read() : nil
+        let thermalInfo = thermalClient.read()
         appStateClient.send(\.metrics, default: .init()) { metrics in
             metrics.systemInfoBundle = systemInfoBundle
+            metrics.gpuInfo = monitorsGPU ? gpuInfo : nil
+            metrics.thermalInfo = thermalInfo
             if let value = systemInfoBundle.cpuInfo?.percentage.value {
                 metrics.cpuRingBuffer.append(value)
             }
             if let value = systemInfoBundle.memoryInfo?.percentage.value {
                 metrics.memoryRingBuffer.append(value)
+            }
+            if monitorsGPU, let value = gpuInfo?.utilization {
+                metrics.gpuRingBuffer.append(value)
+            }
+        }
+        return gpuInfo
+    }
+
+    func toggleGPUMonitoring(isOn: Bool) {
+        let gpuInfo = isOn ? gpuInfoClient.read() : nil
+        appStateClient.send(\.metrics, default: .init()) { metrics in
+            metrics.gpuInfo = gpuInfo
+            if !isOn {
+                metrics.gpuRingBuffer = .init()
             }
         }
     }

@@ -34,7 +34,11 @@ extension GraphicsContext {
     }
 
     mutating func drawIcon(systemName: String, point: CGPoint, size: CGSize) {
-        var image = resolve(.init(systemName: systemName))
+        drawIcon(Image(systemName: systemName), point: point, size: size)
+    }
+
+    mutating func drawIcon(_ icon: Image, point: CGPoint, size: CGSize) {
+        var image = resolve(icon)
         image.shading = .color(.black)
         let point = CGPoint(
             x: point.x + 0.5 * size.width,

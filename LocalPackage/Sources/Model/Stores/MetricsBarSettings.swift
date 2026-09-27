@@ -103,6 +103,20 @@ public final class MetricsBarSettings: Composable {
                 systemMetricsService.toggleSystemMetricsActivation(type: type, isOn: isOn)
             }
 
+        case let .showsGPUToggleSwitched(isOn):
+            metricsBarConfiguration.showsGPU = isOn
+            var configuration = userDefaultsRepository.systemMetricsConfiguration
+            let needsActivation = isOn && !configuration.monitorsGPU
+            if needsActivation {
+                configuration.monitorsGPU = true
+            }
+            userDefaultsRepository.metricsBarConfiguration = metricsBarConfiguration
+            userDefaultsRepository.systemMetricsConfiguration = configuration
+            systemMetricsService.emitConfigurationChange()
+            if needsActivation {
+                systemMetricsService.toggleGPUMonitoring(isOn: true)
+            }
+
         case let .showsCustomMetricsToggleSwitched(id, isOn):
             if isOn {
                 metricsBarConfiguration.visibleCustomMetricsSourceIDs.insert(id)
@@ -123,6 +137,7 @@ public final class MetricsBarSettings: Composable {
         case viewAppeared(String)
         case viewDisappeared
         case showsSystemMetricsToggleSwitched(SystemInfoType, Bool)
+        case showsGPUToggleSwitched(Bool)
         case showsCustomMetricsToggleSwitched(UUID, Bool)
     }
 }

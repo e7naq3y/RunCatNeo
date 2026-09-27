@@ -41,6 +41,12 @@ struct MetricsSettingsView: View {
             }
             Section {
                 Toggle(isOn: Binding<Bool>(
+                    get: { store.systemMetricsConfiguration.monitorsGPU },
+                    asyncSet: { await store.send(.monitorsGPUToggleSwitched($0)) }
+                )) {
+                    Text("enableGPUUsageMonitoring", bundle: .module)
+                }
+                Toggle(isOn: Binding<Bool>(
                     get: { store.systemMetricsConfiguration.monitorsMemory },
                     asyncSet: { await store.send(.monitorsSystemMetricsToggleSwitched(.memory, $0)) }
                 )) {

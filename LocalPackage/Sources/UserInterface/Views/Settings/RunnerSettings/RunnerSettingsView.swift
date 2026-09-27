@@ -18,6 +18,7 @@
  limitations under the License.
  */
 
+import DataSource
 import Model
 import SwiftUI
 
@@ -27,6 +28,17 @@ struct RunnerSettingsView: View {
     var body: some View {
         Form {
             Section {
+                Picker(selection: Binding<RunnerSpeedSource>(
+                    get: { store.runnerSpeedSource },
+                    asyncSet: { await store.send(.runnerSpeedSourcePickerSelected($0)) }
+                )) {
+                    ForEach(RunnerSpeedSource.allCases) { source in
+                        Text(source.localizedKey, bundle: .module)
+                            .tag(source)
+                    }
+                } label: {
+                    Text("runnerSpeedSource", bundle: .module)
+                }
                 Toggle(isOn: Binding<Bool>(
                     get: { store.speedDecreasesUnderLoad },
                     asyncSet: { await store.send(.slowDownUnderLoadToggleSwitched($0)) }
