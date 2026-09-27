@@ -3,6 +3,7 @@
  UserInterface
 
  Created by Takuto Nakamura on 2026/05/23.
+ Modified by the RunCat Neo GPU fork (https://github.com/e7naq3y/RunCatNeo) in 2026/09.
  Copyright 2026 Kyome22 (Takuto Nakamura)
 
  Licensed under the Apache License, Version 2.0 (the "License");

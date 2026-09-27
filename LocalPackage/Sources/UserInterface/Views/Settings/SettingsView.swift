@@ -3,6 +3,7 @@
  UserInterface
 
  Created by Takuto Nakamura on 2026/05/23.
+ Modified by the RunCat Neo GPU fork (https://github.com/e7naq3y/RunCatNeo) in 2026/09.
  Copyright 2026 Kyome22 (Takuto Nakamura)
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,15 +56,7 @@ struct SettingsView: View {
                     }
                 }
                 .tag(SettingsTab.metrics)
-            DonationSettingsView(store: .init(appDependencies))
-                .tabItem {
-                    Label {
-                        Text("donationTab", bundle: .module)
-                    } icon: {
-                        Image(systemName: "mug")
-                    }
-                }
-                .tag(SettingsTab.donation)
+            // 捐赠页依赖上游的 App Store 内购，商店外的构建加载不到商品，这个 fork 不显示它
         }
         .fixedSize()
         .accessibilityIdentifier("settings")

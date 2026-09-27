@@ -2,7 +2,7 @@
  GPUInfo+Extension.swift
  UserInterface
 
- Added by the GPU fork on 2026/09/27.
+ Added by the RunCat Neo GPU fork (https://github.com/e7naq3y/RunCatNeo) on 2026/09/27.
  Copyright 2026 Kyome22 (Takuto Nakamura)
 
  Licensed under the Apache License, Version 2.0 (the "License");
